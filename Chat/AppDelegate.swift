@@ -11,58 +11,50 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    var previousAppState = "Not running"
     
     // MARK: - Launching an app into the foreground
     
     // Launch time - First initialization
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: application.applicationState.name)
+        updateAppState(with: application.applicationState.name)
         return true
     }
     
     // Launch time - Final initialization
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: application.applicationState.name)
+        updateAppState(with: application.applicationState.name)
         return true
     }
     
     // Running - Activate the app
     func applicationDidBecomeActive(_ application: UIApplication) {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: application.applicationState.name)
+        updateAppState(with: application.applicationState.name)
     }
     
     // MARK: - Launching an app into the background
     
     // Background - Enter Background
     func applicationDidEnterBackground(_ application: UIApplication) {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: application.applicationState.name)
+        updateAppState(with: application.applicationState.name)
     }
     
     // MARK: - Moving from the foreground to the background
     
     // Foreground - Deactivate the app (ex. switch to a different app / tap Home button)
     func applicationWillResignActive(_ application: UIApplication) {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: "Background")
+        updateAppState(with: "Background")
     }
     
     // MARK: - Moving from the background to the foreground
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: "Inactive")
+        updateAppState(with: "Inactive")
     }
     
     // MARK: - Closing the app
     
     func applicationWillTerminate(_ application: UIApplication) {
-        logAppLifeCycleFunction()
-        logAppStates(previous: previousAppState, current: "Terminated")
+        updateAppState(with: "Terminated")
     }
     
     // MARK: - UISceneSession Lifecycle
@@ -83,17 +75,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Private
     
-    private func logAppLifeCycleFunction(name: String = #function) {
-        if #available(iOS 13.0, *) {} else {
-            print("Application lifecycle method: \(name)")
-        }
-    }
-    
-    private func logAppStates(previous: String, current: String) {
-        if #available(iOS 13.0, *) {} else {
-            print("Application moved from \(previous) to \(current)\n")
-            previousAppState = current
-        }
+    private func updateAppState(with current: String, funcName: String = #function) {
+        if #available(iOS 13.0, *) { return }
+        
+        ApplicationStateProvider.shared.update(appState: current, funcName: funcName)
     }
 }
 
